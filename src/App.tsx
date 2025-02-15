@@ -10,15 +10,21 @@ import StructuralPatterns from "./pages/StructuralPatterns";
 import BehavioralPatterns from "./pages/BehavioralPatterns";
 import Home from "./pages/Home";
 import "./App.css";
+import Factory from "./examples/fabric-pattern/Factory.tsx";
+import Observer from "./examples/behavioral/Observer.tsx";
 
 const App = () => (
   <Router>
     <Navbar />
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/creational/*" element={<CreationalPatterns />} />
+      <Route path="/creational/*" element={<CreationalPatterns />}>
+        <Route path="factory" element={<Factory />} />
+      </Route>
       <Route path="/structural/*" element={<StructuralPatterns />} />
-      <Route path="/behavioral/*" element={<BehavioralPatterns />} />
+      <Route path="/behavioral/*" element={<BehavioralPatterns />}>
+        <Route path="observer" element={<Observer />} />
+      </Route>
       <Route path="*" element={<Navigate to="/creational" />} />
     </Routes>
   </Router>

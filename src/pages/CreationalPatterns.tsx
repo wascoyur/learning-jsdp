@@ -1,3 +1,5 @@
+import { Outlet } from "react-router-dom";
+
 const CreationalPatterns = () => (
   <div>
     <h2>Порождающие паттерны (Creational Patterns)</h2>
@@ -24,6 +26,7 @@ const CreationalPatterns = () => (
         экземпляр и предоставляет глобальную точку доступа к этому экземпляру.
       </li>
     </ul>
+    <Outlet /> {/* Этот компонент будет отображать вложенные маршруты */}
   </div>
 );
 

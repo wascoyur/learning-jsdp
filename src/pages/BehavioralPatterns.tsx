@@ -1,3 +1,5 @@
+import { Outlet } from "react-router-dom";
+
 const BehavioralPatterns = () => (
   <div>
     <h2>Поведенческие паттерны (Behavioral Patterns)</h2>
@@ -50,6 +52,7 @@ const BehavioralPatterns = () => (
         объектов, над которыми эта операция выполняется.
       </li>
     </ul>
+    <Outlet />
   </div>
 );
 
