@@ -7,6 +7,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
 }
 
 .form {
@@ -90,4 +91,10 @@
 .selectedManager {
   background-color: #007bff;
   color: white;
+}
+
+.tabContent {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #333;
 }
