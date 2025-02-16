@@ -1,30 +1,33 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-type Topic = {
+export type Topic = {
   uid: string;
   content: string;
-  date: number;
   identifier: string;
   stockPrice: number;
+  date: number;
 };
 
-type Store = {
+export type Store = {
   topics: Topic[];
 };
 
+let globalStore: Store = { topics: [] };
+
 export const useStore = () => {
-  const [store, setStore] = useState<Store>({ topics: [] });
+  const [store, setStore] = useState<Store>(globalStore);
 
   const addTopic = (topic: Omit<Topic, "uid">) => {
-    const newTopic: Topic = {
-      ...topic,
-      uid: uuidv4(),
-    };
-    setStore((prevStore) => ({
-      topics: [...prevStore.topics, newTopic],
-    }));
+    const newTopic: Topic = { ...topic, uid: uuidv4() };
+    globalStore = { topics: [...globalStore.topics, newTopic] };
+    setStore(globalStore);
   };
 
-  return { store, addTopic };
+  const initStore = () => {
+    globalStore = { topics: [] };
+    setStore(globalStore);
+  };
+
+  return { store, addTopic, initStore };
 };

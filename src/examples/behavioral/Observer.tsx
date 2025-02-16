@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "../../components/Card.tsx";
 import { useStore } from "./store.ts";
+import { useSimulateFetchData } from "./fetchSimulator.ts";
 
 const getCurrentTime = () => {
   const date = new Date();
@@ -13,32 +14,17 @@ const getCurrentTime = () => {
 };
 
 export const Observer = () => {
-  const { store, addTopic } = useStore();
+  const { store, initStore, addTopic } = useStore();
+  const [isStoreInitialized, setIsStoreInitialized] = useState(false);
 
   useEffect(() => {
-    const timer1 = setTimeout(() => {
-      addTopic({
-        content: "Apple made $5 billion",
-        identifier: "APPL",
-        stockPrice: 570.91,
-        date: Date.now(),
-      });
-    }, 20000);
+    if (!isStoreInitialized) {
+      initStore();
+      setIsStoreInitialized(true);
+    }
+  }, [isStoreInitialized, initStore]);
 
-    const timer2 = setTimeout(() => {
-      addTopic({
-        content: "Microsoft made $20 million",
-        identifier: "MSFT",
-        stockPrice: 30.85,
-        date: Date.now(),
-      });
-    }, 4000);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, [addTopic]);
+  useSimulateFetchData(addTopic);
 
   return (
     <Card>
@@ -55,14 +41,20 @@ export const Observer = () => {
             </tr>
           </thead>
           <tbody>
-            {store.topics.map((topic) => (
-              <tr key={topic.uid}>
-                <td>{topic.content}</td>
-                <td>{topic.identifier}</td>
-                <td>{topic.stockPrice.toFixed(2)}</td>
-                <td>{new Date(topic.date).toLocaleString()}</td>
+            {store.topics.length > 0 ? (
+              store.topics.map((topic) => (
+                <tr key={topic.uid}>
+                  <td>{topic.content}</td>
+                  <td>{topic.identifier}</td>
+                  <td>{topic.stockPrice.toFixed(2)}</td>
+                  <td>{new Date(topic.date).toLocaleString()}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td>Loading...</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 
