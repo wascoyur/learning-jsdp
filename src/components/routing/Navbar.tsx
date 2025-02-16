@@ -31,6 +31,7 @@ const Navbar = () => {
             { to: "/behavioral/observer", label: "Observer" },
             { to: "/behavioral/strategy", label: "Strategy" },
             { to: "/behavioral/command", label: "Command" },
+            { to: "/behavioral/mediator", label: "Mediator" },
           ]}
         />
       </ul>

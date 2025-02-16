@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import "./App.css";
 import Factory from "./examples/fabric-pattern/Factory.tsx";
 import { Observer } from "./examples/behavioral/Observer.tsx";
+import MediatorEmployee from "./examples/behavioral/Mediator/MediatorEmployee.tsx";
 
 const App = () => (
   <Router>
@@ -24,6 +25,7 @@ const App = () => (
       <Route path="/structural/*" element={<StructuralPatterns />} />
       <Route path="/behavioral/*" element={<BehavioralPatterns />}>
         <Route path="observer" element={<Observer />} />
+        <Route path="mediator" element={<MediatorEmployee />} />
       </Route>
       <Route path="*" element={<Navigate to="/creational" />} />
     </Routes>

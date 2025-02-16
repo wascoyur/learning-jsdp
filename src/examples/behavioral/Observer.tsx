@@ -14,7 +14,7 @@ const getCurrentTime = () => {
 };
 
 export const Observer = () => {
-  const { store, initStore, addTopic } = useStore();
+  const { store, initStore, addItem } = useStore();
   const [isStoreInitialized, setIsStoreInitialized] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const Observer = () => {
     }
   }, [isStoreInitialized, initStore]);
 
-  useSimulateFetchData(addTopic);
+  useSimulateFetchData(addItem);
 
   return (
     <Card>
