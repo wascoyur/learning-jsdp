@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card } from "../../components/Card.tsx";
+import { Card } from "../../components/Card/Card.tsx";
 import { useStore } from "./store.ts";
 import { useSimulateFetchData } from "./fetchSimulator.ts";
 
@@ -14,7 +14,7 @@ const getCurrentTime = () => {
 };
 
 export const Observer = () => {
-  const { store, initStore, addTopic } = useStore();
+  const { store, initStore, addItem } = useStore();
   const [isStoreInitialized, setIsStoreInitialized] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const Observer = () => {
     }
   }, [isStoreInitialized, initStore]);
 
-  useSimulateFetchData(addTopic);
+  useSimulateFetchData(addItem);
 
   return (
     <Card>
