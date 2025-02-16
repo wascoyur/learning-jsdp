@@ -1,0 +1,78 @@
+$navbar-background-color: #333;
+$navbar-text-color: #fff;
+$navbar-link-color: #ccc;
+$navbar-link-hover-color: #fff;
+
+.navbar {
+  position: fixed;
+  z-index: 1000;
+  background-color: $navbar-background-color;
+  padding: 1rem;
+  width: 100vw;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  color: $navbar-text-color;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  margin-right: 1rem;
+  display: inline;
+}
+
+.navItem a {
+  color: $navbar-link-color;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.navItem a:hover {
+  color: $navbar-link-hover-color;
+  text-decoration: underline;
+  background-color: #e9ecef;
+}
+
+.subMenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.subMenuItem {
+  margin: 0.5rem 0;
+}
+
+.subMenuItem a {
+  color: black;
+  text-decoration: none;
+  padding: 12px 16px;
+  display: block;
+}
+
+.subMenuItem a:hover {
+  background-color: #f1f1f1;
+}
+
+.navItem:hover .subMenu {
+  display: block;
+}

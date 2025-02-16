@@ -1,74 +1,38 @@
-import { useState } from "react";
-import styles from "./Navbar.module.css";
+import NavItem from "./MenuItem.tsx";
+import styles from "./Navbar.module.scss";
 
 const Navbar = () => {
-  const [isCreationalOpen, setIsCreationalOpen] = useState(false);
-  const [isStructuralOpen, setIsStructuralOpen] = useState(false);
-  const [isBehavioralOpen, setIsBehavioralOpen] = useState(false);
-
   return (
-    <nav>
-      <ul className={styles.nav}>
-        <li>
-          <a href="/">Домой</a>
-        </li>
-        <li className={styles.dropdown}>
-          <a href="#" onClick={() => setIsCreationalOpen(!isCreationalOpen)}>
-            Порождающие паттерны
-          </a>
-          {isCreationalOpen && (
-            <ul className={styles.dropdownContent}>
-              <li>
-                <a href="/creational/singleton">Singleton</a>
-              </li>
-              <li>
-                <a href="/creational/factory">Factory</a>
-              </li>
-              <li>
-                <a href="/creational/abstract-factory">Abstract Factory</a>
-              </li>
-              {/* Добавьте больше порождающих паттернов по необходимости */}
-            </ul>
-          )}
-        </li>
-        <li className={styles.dropdown}>
-          <a href="#" onClick={() => setIsStructuralOpen(!isStructuralOpen)}>
-            Структурные паттерны
-          </a>
-          {isStructuralOpen && (
-            <ul className={styles.dropdownContent}>
-              <li>
-                <a href="/structural/adapter">Adapter</a>
-              </li>
-              <li>
-                <a href="/structural/decorator">Decorator</a>
-              </li>
-              <li>
-                <a href="/structural/facade">Facade</a>
-              </li>
-              {/* Добавьте больше структурных паттернов по необходимости */}
-            </ul>
-          )}
-        </li>
-        <li className={styles.dropdown}>
-          <a href="#" onClick={() => setIsBehavioralOpen(!isBehavioralOpen)}>
-            Поведенческие паттерны
-          </a>
-          {isBehavioralOpen && (
-            <ul className={styles.dropdownContent}>
-              <li>
-                <a href="/behavioral/observer">Observer</a>
-              </li>
-              <li>
-                <a href="/behavioral/strategy">Strategy</a>
-              </li>
-              <li>
-                <a href="/behavioral/command">Command</a>
-              </li>
-              {/* Добавьте больше поведенческих паттернов по необходимости */}
-            </ul>
-          )}
-        </li>
+    <nav className={styles.navbar}>
+      <ul className={styles.navList}>
+        <NavItem to="/" label="Домой" />
+        <NavItem
+          to="/creational"
+          label="Порождающие паттерны"
+          submenu={[
+            { to: "/creational/singleton", label: "Singleton" },
+            { to: "/creational/factory", label: "Factory" },
+            { to: "/creational/abstract-factory", label: "Abstract Factory" },
+          ]}
+        />
+        <NavItem
+          to="/structural"
+          label="Структурные паттерны"
+          submenu={[
+            { to: "/structural/adapter", label: "Adapter" },
+            { to: "/structural/decorator", label: "Decorator" },
+            { to: "/structural/facade", label: "Facade" },
+          ]}
+        />
+        <NavItem
+          to="/behavioral"
+          label="Поведенческие паттерны"
+          submenu={[
+            { to: "/behavioral/observer", label: "Observer" },
+            { to: "/behavioral/strategy", label: "Strategy" },
+            { to: "/behavioral/command", label: "Command" },
+          ]}
+        />
       </ul>
     </nav>
   );
