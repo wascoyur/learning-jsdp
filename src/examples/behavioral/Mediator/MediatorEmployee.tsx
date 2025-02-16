@@ -2,16 +2,19 @@ import { useState } from "react";
 import s from "./MediatorEmployee.module.scss";
 import { Employee, useStore } from "../store.ts";
 
+const managers = ["Alice", "Bob", "Charlie", "David", "Eve"];
+
 const EmployeeList = () => {
   const { store, addItem } = useStore();
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
 
   const handleAddEmployee = () => {
+    const randomManager = managers[Math.floor(Math.random() * managers.length)];
     const newEmployee: Omit<Employee, "uid"> = {
       name,
       role,
-      manager: "boss",
+      manager: randomManager,
     };
     addItem(newEmployee, "employees");
     setName("");
@@ -63,6 +66,14 @@ const EmployeeList = () => {
           </li>
         ))}
       </ul>
+      <h2>Managers</h2>
+      <div className={s.managerList}>
+        {managers.map((manager, index) => (
+          <div key={index} className={s.managerItem}>
+            {manager}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
