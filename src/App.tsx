@@ -4,7 +4,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/routing/Navbar.tsx";
 import CreationalPatterns from "./pages/CreationalPatterns";
 import StructuralPatterns from "./pages/StructuralPatterns";
 import BehavioralPatterns from "./pages/BehavioralPatterns";

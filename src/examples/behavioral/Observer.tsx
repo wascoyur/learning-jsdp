@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card } from "../../components/Card.tsx";
+import { Card } from "../../components/Card/Card.tsx";
 import { useStore } from "./store.ts";
 import { useSimulateFetchData } from "./fetchSimulator.ts";
 
