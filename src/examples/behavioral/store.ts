@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export type Employee = {
@@ -22,9 +22,22 @@ export type Store = {
 };
 
 let globalStore: Store = { employees: [], topics: [] };
+let subscribers: ((store: Store) => void)[] = [];
 
 export const useStore = () => {
   const [store, setStore] = useState<Store>(globalStore);
+
+  useEffect(() => {
+    const handleStoreUpdate = (updatedStore: Store) => {
+      setStore(updatedStore);
+    };
+
+    subscribers.push(handleStoreUpdate);
+
+    return () => {
+      subscribers = subscribers.filter((sub) => sub !== handleStoreUpdate);
+    };
+  }, []);
 
   const addItem = <T extends { uid: string }>(
     item: Omit<T, "uid">,
@@ -35,13 +48,26 @@ export const useStore = () => {
       ...globalStore,
       [key]: [...globalStore[key], newItem],
     };
-    setStore(globalStore);
+    notifySubscribers();
   };
 
   const initStore = () => {
     globalStore = { employees: [], topics: [] };
     setStore(globalStore);
+    notifySubscribers();
   };
 
-  return { store, addItem, initStore };
+  const subscribe = (callback: (store: Store) => void) => {
+    subscribers.push(callback);
+  };
+
+  const unsubscribe = (callback: (store: Store) => void) => {
+    subscribers = subscribers.filter((sub) => sub !== callback);
+  };
+
+  const notifySubscribers = () => {
+    subscribers.forEach((callback) => callback(globalStore));
+  };
+
+  return { store, addItem, initStore, subscribe, unsubscribe };
 };

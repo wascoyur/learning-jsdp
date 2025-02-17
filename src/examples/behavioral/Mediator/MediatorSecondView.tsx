@@ -1,52 +1,36 @@
-import {
-  createMediator,
-  SubscribeFunction,
-  PublishFunction,
-} from "./createMediator.ts";
-import s from "./MediatorEmployee.module.scss";
 import { useEffect, useState } from "react";
+import { Store } from "../store.ts";
+import s from "./MediatorEmployee.module.scss";
 
-export const MediatorSecondView = () => {
-  const mediator = createMediator();
+const MediatorSecondView = (store: Pick<Store, "employees">) => {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [currentEmployees, setCurrentEmployees] = useState(store.employees);
+
+  useEffect(() => {
+    if (isSubscribed) {
+      setCurrentEmployees(store.employees);
+    }
+  }, [store, isSubscribed]);
+
+  const toggleSubscription = () => {
+    setIsSubscribed((prev) => !prev);
+  };
 
   return (
     <div className={s.container}>
-      <p>Second implementation</p>
-      <TabButton mediator={mediator} index={"left"} />
-      <TabButton mediator={mediator} index={"right"} />
-      <TabContent mediator={mediator} />
+      <h2>Second Mediator</h2>
+      <button onClick={toggleSubscription}>
+        {isSubscribed ? "Unsubscribe" : "Subscribe"}
+      </button>
+      <ul className={s.employeeList}>
+        {currentEmployees.map((employee) => (
+          <li key={employee.uid} className={s.employeeItem}>
+            {employee.name} - {employee.role} - Manager: {employee.manager}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-type TabButtonProps = {
-  mediator: { publish: PublishFunction };
-  index: string;
-};
-
-const TabButton = ({ mediator, index }: TabButtonProps) => (
-  <button
-    className={s.button}
-    onClick={() => mediator.publish("tabChange", index)}
-  >
-    Tab {index}
-  </button>
-);
-
-type TabContentProps = {
-  mediator: { subscribe: SubscribeFunction };
-};
-
-const TabContent = ({ mediator }: TabContentProps) => {
-  const [activeTab, setActiveTab] = useState<string | null>(null);
-
-  useEffect(() => {
-    mediator.subscribe("tabChange", setActiveTab);
-  }, [mediator]);
-
-  return activeTab ? (
-    <div className={s.tabContent}>Выбранная вкладка: {activeTab}</div>
-  ) : (
-    <div className={s.tabContent}>Выберите вкладку</div>
-  );
-};
+export default MediatorSecondView;
