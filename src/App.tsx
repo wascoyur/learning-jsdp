@@ -12,7 +12,7 @@ import Home from "./pages/Home";
 import "./App.css";
 import Factory from "./examples/fabric-pattern/Factory.tsx";
 import { Observer } from "./examples/behavioral/Observer.tsx";
-import MediatorEmployee from "./examples/behavioral/Mediator/MediatorView.tsx";
+import MediatorEmployee from "./examples/behavioral/Mediator/MediatorsView.tsx";
 
 const App = () => (
   <Router>

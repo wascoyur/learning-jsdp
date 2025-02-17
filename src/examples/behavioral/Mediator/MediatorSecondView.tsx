@@ -2,11 +2,11 @@ import {
   createMediator,
   SubscribeFunction,
   PublishFunction,
-} from "./MediatorTab.ts";
+} from "./createMediator.ts";
 import s from "./MediatorEmployee.module.scss";
 import { useEffect, useState } from "react";
 
-export const SecondMediator = () => {
+export const MediatorSecondView = () => {
   const mediator = createMediator();
 
   return (

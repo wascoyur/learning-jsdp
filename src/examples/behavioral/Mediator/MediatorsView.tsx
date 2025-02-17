@@ -3,7 +3,7 @@ import { useStore } from "../store.ts";
 import { Card } from "../../../components/Card/Card.tsx";
 import Mediator from "./EmployeeMediator";
 
-import { SecondMediator } from "./MediatorTab.tsx";
+import { MediatorSecondView } from "./MediatorSecondView.tsx";
 
 const EmployeeList = () => {
   const { store, addItem } = useStore();
@@ -23,7 +23,7 @@ const EmployeeList = () => {
         </ul>
       </div>
 
-      <SecondMediator />
+      <MediatorSecondView />
     </Card>
   );
 };
