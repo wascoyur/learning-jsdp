@@ -24,7 +24,7 @@ export type Storage = {
 let globalStore: Storage = { employees: [], topics: [] };
 let subscribers: ((store: Storage) => void)[] = [];
 
-export const useStore = () => {
+export const useStorage = () => {
   const [store, setStore] = useState<Storage>(globalStore);
 
   useEffect(() => {

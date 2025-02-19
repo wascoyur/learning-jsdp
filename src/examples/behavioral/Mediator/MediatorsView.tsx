@@ -1,11 +1,11 @@
 import s from "./MediatorEmployee.module.scss";
-import { useStore } from "../../../storage/Storage.ts";
+import { useStorage } from "../../../storage/Storage.ts";
 import { Card } from "../../../components/Card/Card.tsx";
 import Mediator from "./EmployeeMediator";
 import MediatorSecondView from "./MediatorSecondView.tsx";
 
 const EmployeeList = () => {
-  const { store, addItem } = useStore();
+  const { store, addItem } = useStorage();
   return (
     <Card>
       <h1>Pattern Mediator</h1>
