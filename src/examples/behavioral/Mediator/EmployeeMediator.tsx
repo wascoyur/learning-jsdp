@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Employee, Store } from "../store.ts";
+import { Employee, Storage } from "../../../storage/Storage.ts";
 import s from "./MediatorEmployee.module.scss";
 
 const managers = ["Alice", "Bob", "Charlie", "David", "Eve"];
@@ -19,7 +19,7 @@ const roles = [
 interface EmployeeMediatorProps {
   addItem: <T extends { uid: string }>(
     item: Omit<T, "uid">,
-    key: keyof Store,
+    key: keyof Storage,
   ) => void;
 }
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Store } from "../store.ts";
+import { Storage } from "../../../storage/Storage.ts";
 import s from "./MediatorEmployee.module.scss";
 
-const MediatorSecondView = (store: Pick<Store, "employees">) => {
+const MediatorSecondView = (store: Pick<Storage, "employees">) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentEmployees, setCurrentEmployees] = useState(store.employees);
 

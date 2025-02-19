@@ -16,19 +16,19 @@ export type Topic = {
   date: number;
 };
 
-export type Store = {
+export type Storage = {
   employees: Employee[];
   topics: Topic[];
 };
 
-let globalStore: Store = { employees: [], topics: [] };
-let subscribers: ((store: Store) => void)[] = [];
+let globalStore: Storage = { employees: [], topics: [] };
+let subscribers: ((store: Storage) => void)[] = [];
 
 export const useStore = () => {
-  const [store, setStore] = useState<Store>(globalStore);
+  const [store, setStore] = useState<Storage>(globalStore);
 
   useEffect(() => {
-    const handleStoreUpdate = (updatedStore: Store) => {
+    const handleStoreUpdate = (updatedStore: Storage) => {
       setStore(updatedStore);
     };
 
@@ -41,7 +41,7 @@ export const useStore = () => {
 
   const addItem = <T extends { uid: string }>(
     item: Omit<T, "uid">,
-    key: keyof Store,
+    key: keyof Storage,
   ) => {
     const newItem = { ...item, uid: uuidv4() };
     globalStore = {
@@ -57,11 +57,11 @@ export const useStore = () => {
     notifySubscribers();
   };
 
-  const subscribe = (callback: (store: Store) => void) => {
+  const subscribe = (callback: (store: Storage) => void) => {
     subscribers.push(callback);
   };
 
-  const unsubscribe = (callback: (store: Store) => void) => {
+  const unsubscribe = (callback: (store: Storage) => void) => {
     subscribers = subscribers.filter((sub) => sub !== callback);
   };
 

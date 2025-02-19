@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Store } from "./store.ts";
+import { Storage } from "../../storage/Storage.ts";
 
 const getRandomPercentageChange = () => {
   return (Math.random() * 20 + 10) / 100;
@@ -8,7 +8,7 @@ const getRandomPercentageChange = () => {
 const addAppleTopic = (
   addTopic: <T extends { uid: string }>(
     item: Omit<T, "uid">,
-    key: keyof Store,
+    key: keyof Storage,
   ) => void,
   setAppleCount: React.Dispatch<React.SetStateAction<number>>,
 ) => {
@@ -28,7 +28,7 @@ const addAppleTopic = (
 const addMicrosoftTopic = (
   addTopic: <T extends { uid: string }>(
     item: Omit<T, "uid">,
-    key: keyof Store,
+    key: keyof Storage,
   ) => void,
 ) => {
   const stockPrice = 30.85 * (1 + getRandomPercentageChange());
@@ -46,7 +46,7 @@ const addMicrosoftTopic = (
 const setupTimers = (
   addTopic: <T extends { uid: string }>(
     item: Omit<T, "uid">,
-    key: keyof Store,
+    key: keyof Storage,
   ) => void,
   appleCount: number,
   setAppleCount: React.Dispatch<React.SetStateAction<number>>,
@@ -72,7 +72,7 @@ const setupTimers = (
 export const useSimulateFetchData = (
   addTopic: <T extends { uid: string }>(
     item: Omit<T, "uid">,
-    key: keyof Store,
+    key: keyof Storage,
   ) => void,
 ) => {
   const [appleCount, setAppleCount] = useState(0);

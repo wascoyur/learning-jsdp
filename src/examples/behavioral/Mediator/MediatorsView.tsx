@@ -1,5 +1,5 @@
 import s from "./MediatorEmployee.module.scss";
-import { useStore } from "../store.ts";
+import { useStore } from "../../../storage/Storage.ts";
 import { Card } from "../../../components/Card/Card.tsx";
 import Mediator from "./EmployeeMediator";
 import MediatorSecondView from "./MediatorSecondView.tsx";
