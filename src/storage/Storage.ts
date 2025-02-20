@@ -5,9 +5,9 @@ const Database = {
   version: 1,
 };
 
-interface UseStorageResult {
-  getValue: <T>(tableName: keyof Storage, id: number) => Promise<T | undefined>;
-  getAllValue: <T>(tableName: keyof Storage) => Promise<T[]>;
+interface UseStorageResult<T> {
+  getValue: (tableName: keyof Storage, id: number) => Promise<T | undefined>;
+  getAllValue: (tableName: keyof Storage) => Promise<T[]>;
   putValue: (
     tableName: keyof Storage,
     value: object,
@@ -24,17 +24,17 @@ interface UseStorageResult {
   deleteValue: (tableName: keyof Storage, id: number) => number | null;
   deleteAll: (tableName: keyof Storage) => void;
   isDBConnecting: boolean;
-  subscribe: (subscriber: Subscriber, tableName: keyof Storage) => void;
-  unsubscribe: (subscriber: Subscriber, tableName: keyof Storage) => void;
+  subscribe: (subscriber: Subscriber<T>, tableName: keyof Storage) => void;
+  unsubscribe: (subscriber: Subscriber<T>, tableName: keyof Storage) => void;
 }
 
-export const useStorage = (
+export const useStorage = <T>(
   databaseName: string,
   tableNames: (keyof Storage)[],
-): UseStorageResult => {
+): UseStorageResult<T> => {
   const [db, setDB] = useState<IDBDatabase | null>(null);
   const [isDBConnecting, setIsDBConnecting] = useState<boolean>(true);
-  const subscribersRef = useRef<Map<keyof Storage, Subscriber[]>>(new Map());
+  const subscribersRef = useRef<Map<keyof Storage, Subscriber<T>[]>>(new Map());
 
   useEffect(() => {
     const initDB = () => {
@@ -77,7 +77,7 @@ export const useStorage = (
   };
 
   const getValue = useCallback(
-    async <T>(tableName: keyof Storage, id: number): Promise<T | undefined> => {
+    async (tableName: keyof Storage, id: number): Promise<T | undefined> => {
       return new Promise((resolve, reject) => {
         try {
           const store = getTransaction(tableName, "readonly");
@@ -92,7 +92,7 @@ export const useStorage = (
     [db],
   );
 
-  const getAllValue = async <T>(tableName: keyof Storage): Promise<T[]> => {
+  const getAllValue = async (tableName: keyof Storage): Promise<T[]> => {
     return new Promise((resolve, reject) => {
       try {
         const store = getTransaction(tableName, "readonly");
@@ -183,14 +183,14 @@ export const useStorage = (
     }
   };
 
-  const subscribe = (subscriber: Subscriber, tableName: keyof Storage) => {
+  const subscribe = (subscriber: Subscriber<T>, tableName: keyof Storage) => {
     subscribersRef.current.set(tableName, [
       ...(subscribersRef.current.get(tableName) || []),
       subscriber,
     ]);
   };
 
-  const unsubscribe = (subscriber: Subscriber, tableName: keyof Storage) => {
+  const unsubscribe = (subscriber: Subscriber<T>, tableName: keyof Storage) => {
     subscribersRef.current.set(
       tableName,
       (subscribersRef.current.get(tableName) || []).filter(
@@ -202,7 +202,7 @@ export const useStorage = (
   const notifySubscribers = (tableName: keyof Storage, data: unknown) => {
     const currentSubscribers = subscribersRef.current.get(tableName) || [];
     currentSubscribers.forEach((subscriber) =>
-      subscriber.update(tableName, data),
+      subscriber.update(tableName, data as T),
     );
   };
 

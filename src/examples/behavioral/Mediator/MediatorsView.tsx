@@ -2,30 +2,39 @@ import s from "./MediatorEmployee.module.scss";
 import { useStorage } from "../../../storage/Storage.ts";
 import { Card } from "../../../components/Card/Card.tsx";
 import Mediator from "./EmployeeMediator";
-import { Employee } from "../../../storage/types.ts";
+import { Employee, Subscriber } from "../../../storage/types.ts";
 import { useEffect, useState } from "react";
 
 const dbName = "storage";
 
 const EmployeeList = () => {
-  const { getAllValue, putValue, isDBConnecting, subscribe, unsubscribe } =
-    useStorage(dbName, ["employees"]);
+  const {
+    getAllValue: storage,
+    putValue,
+    isDBConnecting,
+    subscribe,
+    unsubscribe,
+  } = useStorage<Employee>(dbName, ["employees"]);
 
   const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!isDBConnecting) {
-        const employeesResult = await getAllValue<Employee>("employees");
+        const employeesResult = await storage("employees");
         setEmployees(employeesResult);
       }
     };
     fetchData();
   }, [isDBConnecting]);
 
+  const addConvertedItem = (item: Employee) => {
+    putValue("employees", item);
+  };
+
   useEffect(() => {
-    const subscriber = {
-      update: (tableName: "employees", data: Employee) => {
+    const subscriber: Subscriber<Employee> = {
+      update: (tableName: keyof Storage, data: Employee) => {
         if (tableName === "employees") {
           setEmployees((prevEmployees) => [...prevEmployees, data]);
         }
@@ -39,16 +48,12 @@ const EmployeeList = () => {
     };
   }, [subscribe, unsubscribe]);
 
-  const pushToDbItem = (item: Omit<Employee, "uid">) => {
-    putValue("employees", item);
-  };
-
   return (
     <Card>
       <h1>Pattern Mediator</h1>
       <p>Он же в экосистеме Реакт - "Container Component"</p>
       <div className={s.container}>
-        <Mediator addItem={pushToDbItem} />
+        <Mediator addItem={addConvertedItem} />
         <h2>Employees</h2>
         <ul className={s.employeeList}>
           {employees.map((employee) => (

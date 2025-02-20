@@ -18,6 +18,6 @@ export type Storage = {
   topics: Topic[];
 };
 
-export interface Subscriber {
-  update: (tableName: keyof Storage, data: unknown) => void;
+export interface Subscriber<T> {
+  update: (tableName: keyof Storage, data: T) => void;
 }
