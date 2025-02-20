@@ -8,20 +8,15 @@ import { useEffect, useState } from "react";
 const dbName = "storage";
 
 const EmployeeList = () => {
-  const {
-    getAllValue: storage,
-    putValue,
-    isDBConnecting,
-    subscribe,
-    unsubscribe,
-  } = useStorage<Employee>(dbName, ["employees"]);
+  const { getAllValue, putValue, isDBConnecting, subscribe, unsubscribe } =
+    useStorage<Employee>(dbName, ["employees"]);
 
   const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!isDBConnecting) {
-        const employeesResult = await storage("employees");
+        const employeesResult = await getAllValue("employees");
         setEmployees(employeesResult);
       }
     };
