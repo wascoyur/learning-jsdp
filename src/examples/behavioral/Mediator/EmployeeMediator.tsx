@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Employee, Storage } from "../../../storage/Storage.ts";
 import s from "./MediatorEmployee.module.scss";
+import { Employee } from "../../../storage/types.ts";
 
 const managers = ["Alice", "Bob", "Charlie", "David", "Eve"];
 const roles = [
@@ -16,14 +16,13 @@ const roles = [
   "HR Manager",
 ];
 
-interface EmployeeMediatorProps {
-  addItem: <T extends { uid: string }>(
-    item: Omit<T, "uid">,
-    key: keyof Storage,
-  ) => void;
+export interface EmployeeMediatorProps {
+  addItem: (newEmployee: Omit<Employee, "uid">) => void;
 }
 
-const EmployeeMediator = ({ addItem }: EmployeeMediatorProps) => {
+const EmployeeMediator = (props: EmployeeMediatorProps) => {
+  const { addItem } = props;
+
   const [name, setName] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedManager, setSelectedManager] = useState("");
@@ -34,7 +33,7 @@ const EmployeeMediator = ({ addItem }: EmployeeMediatorProps) => {
       role: selectedRole,
       manager: selectedManager,
     };
-    addItem(newEmployee, "employees");
+    addItem(newEmployee);
     setName("");
     setSelectedRole("");
     setSelectedManager("");
