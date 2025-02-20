@@ -1,27 +1,34 @@
 import { useCallback, useEffect, useState } from "react";
+import { Storage } from "./types";
 
 const Database = {
   version: 1,
 };
 
 interface UseStorageResult {
-  getValue: (tableName: string, id: number) => Promise<unknown>;
-  getAllValue: (tableName: string) => Promise<unknown[]>;
-  putValue: (tableName: string, value: object) => Promise<IDBValidKey | null>;
-  putBulkValue: (tableName: string, values: object[]) => Promise<unknown[]>;
+  getValue: <T>(tableName: keyof Storage, id: number) => Promise<T | undefined>;
+  getAllValue: <T>(tableName: keyof Storage) => Promise<T[]>;
+  putValue: (
+    tableName: keyof Storage,
+    value: object,
+  ) => Promise<IDBValidKey | null>;
+  putBulkValue: (
+    tableName: keyof Storage,
+    values: object[],
+  ) => Promise<unknown[]>;
   updateValue: (params: {
-    tableName: string;
+    tableName: keyof Storage;
     id: number;
     newItem: unknown;
   }) => void;
-  deleteValue: (tableName: string, id: number) => number | null;
-  deleteAll: (tableName: string) => void;
+  deleteValue: (tableName: keyof Storage, id: number) => number | null;
+  deleteAll: (tableName: keyof Storage) => void;
   isDBConnecting: boolean;
 }
 
 export const useStorage = (
   databaseName: string,
-  tableNames: string[],
+  tableNames: (keyof Storage)[],
 ): UseStorageResult => {
   const [db, setDB] = useState<IDBDatabase | null>(null);
   const [isDBConnecting, setIsDBConnecting] = useState<boolean>(true);
@@ -58,18 +65,21 @@ export const useStorage = (
     }
   }, [databaseName, tableNames, db]);
 
-  const getTransaction = (tableName: string, mode: IDBTransactionMode) => {
+  const getTransaction = (
+    tableName: keyof Storage,
+    mode: IDBTransactionMode,
+  ) => {
     if (!db) throw new Error("Database is not initialized");
     return db.transaction(tableName, mode).objectStore(tableName);
   };
 
   const getValue = useCallback(
-    (tableName: string, id: number): Promise<unknown> => {
+    async <T>(tableName: keyof Storage, id: number): Promise<T | undefined> => {
       return new Promise((resolve, reject) => {
         try {
           const store = getTransaction(tableName, "readonly");
           const request = store.get(id);
-          request.onsuccess = () => resolve(request.result);
+          request.onsuccess = () => resolve(request.result as T);
           request.onerror = () => reject(request.error);
         } catch (error) {
           reject(error);
@@ -79,12 +89,12 @@ export const useStorage = (
     [db],
   );
 
-  const getAllValue = (tableName: string): Promise<unknown[]> => {
+  const getAllValue = async <T>(tableName: keyof Storage): Promise<T[]> => {
     return new Promise((resolve, reject) => {
       try {
         const store = getTransaction(tableName, "readonly");
         const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => resolve(request.result as T[]);
         request.onerror = () => reject(request.error);
       } catch (error) {
         reject(error);
@@ -93,7 +103,7 @@ export const useStorage = (
   };
 
   const putValue = (
-    tableName: string,
+    tableName: keyof Storage,
     value: object,
   ): Promise<IDBValidKey | null> => {
     return new Promise((resolve, reject) => {
@@ -109,7 +119,7 @@ export const useStorage = (
   };
 
   const putBulkValue = async (
-    tableName: string,
+    tableName: keyof Storage,
     values: object[],
   ): Promise<unknown[]> => {
     try {
@@ -126,7 +136,7 @@ export const useStorage = (
     id,
     newItem,
   }: {
-    tableName: string;
+    tableName: keyof Storage;
     id: number;
     newItem: unknown;
   }) => {
@@ -143,7 +153,7 @@ export const useStorage = (
     }
   };
 
-  const deleteValue = (tableName: string, id: number): number | null => {
+  const deleteValue = (tableName: keyof Storage, id: number): number | null => {
     try {
       const store = getTransaction(tableName, "readwrite");
       store.delete(id);
@@ -154,7 +164,7 @@ export const useStorage = (
     }
   };
 
-  const deleteAll = (tableName: string) => {
+  const deleteAll = (tableName: keyof Storage) => {
     try {
       const store = getTransaction(tableName, "readwrite");
       store.clear();

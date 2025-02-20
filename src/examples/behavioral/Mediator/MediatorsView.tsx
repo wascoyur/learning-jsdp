@@ -8,25 +8,23 @@ import { useEffect, useState } from "react";
 const dbName = "storage";
 
 const EmployeeList = () => {
-  const {
-    getAllValue: storage,
-    putValue,
-    isDBConnecting,
-  } = useStorage(dbName, ["employees"]);
+  const { getAllValue, putValue, isDBConnecting } = useStorage(dbName, [
+    "employees",
+  ]);
 
   const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!isDBConnecting) {
-        const employeesResult = await storage<Employee>("employees");
+        const employeesResult = await getAllValue<Employee>("employees");
         setEmployees(employeesResult);
       }
     };
     fetchData();
   }, [isDBConnecting]);
 
-  const addConvertedItem = (item: Omit<Employee, "uid">) => {
+  const pushToDbItem = (item: Omit<Employee, "uid">) => {
     putValue("employees", item);
   };
 
@@ -35,7 +33,7 @@ const EmployeeList = () => {
       <h1>Pattern Mediator</h1>
       <p>Он же в экосистеме Реакт - "Container Component"</p>
       <div className={s.container}>
-        <Mediator addItem={addConvertedItem} />
+        <Mediator addItem={pushToDbItem} />
         <h2>Employees</h2>
         <ul className={s.employeeList}>
           {employees.map((employee) => (
