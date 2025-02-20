@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { Storage } from "./types";
+import { useCallback, useEffect, useState, useRef } from "react";
+import { Storage, Subscriber } from "./types";
 
 const Database = {
   version: 1,
@@ -24,6 +24,8 @@ interface UseStorageResult {
   deleteValue: (tableName: keyof Storage, id: number) => number | null;
   deleteAll: (tableName: keyof Storage) => void;
   isDBConnecting: boolean;
+  subscribe: (subscriber: Subscriber, tableName: keyof Storage) => void;
+  unsubscribe: (subscriber: Subscriber, tableName: keyof Storage) => void;
 }
 
 export const useStorage = (
@@ -32,6 +34,7 @@ export const useStorage = (
 ): UseStorageResult => {
   const [db, setDB] = useState<IDBDatabase | null>(null);
   const [isDBConnecting, setIsDBConnecting] = useState<boolean>(true);
+  const subscribersRef = useRef<Map<keyof Storage, Subscriber[]>>(new Map());
 
   useEffect(() => {
     const initDB = () => {
@@ -110,7 +113,10 @@ export const useStorage = (
       try {
         const store = getTransaction(tableName, "readwrite");
         const request = store.put(value);
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => {
+          resolve(request.result);
+          notifySubscribers(tableName, value);
+        };
         request.onerror = () => reject(request.error);
       } catch (error) {
         reject(error);
@@ -125,6 +131,7 @@ export const useStorage = (
     try {
       const store = getTransaction(tableName, "readwrite");
       values.forEach((value) => store.put(value));
+      notifySubscribers(tableName, values);
       return getAllValue(tableName);
     } catch (error) {
       throw new Error("Bulk insert failed: " + error);
@@ -147,6 +154,7 @@ export const useStorage = (
         const data = request.result;
         const updatedItem = data ? { ...data, ...newItem } : { id, newItem };
         store.put(updatedItem);
+        notifySubscribers(tableName, updatedItem);
       };
     } catch (error) {
       console.error("Update value failed: ", error);
@@ -157,6 +165,7 @@ export const useStorage = (
     try {
       const store = getTransaction(tableName, "readwrite");
       store.delete(id);
+      notifySubscribers(tableName, { id });
       return id;
     } catch (error) {
       console.error("Delete value failed: ", error);
@@ -168,9 +177,33 @@ export const useStorage = (
     try {
       const store = getTransaction(tableName, "readwrite");
       store.clear();
+      notifySubscribers(tableName, []);
     } catch (error) {
       console.error("Delete all values failed: ", error);
     }
+  };
+
+  const subscribe = (subscriber: Subscriber, tableName: keyof Storage) => {
+    subscribersRef.current.set(tableName, [
+      ...(subscribersRef.current.get(tableName) || []),
+      subscriber,
+    ]);
+  };
+
+  const unsubscribe = (subscriber: Subscriber, tableName: keyof Storage) => {
+    subscribersRef.current.set(
+      tableName,
+      (subscribersRef.current.get(tableName) || []).filter(
+        (s) => s !== subscriber,
+      ),
+    );
+  };
+
+  const notifySubscribers = (tableName: keyof Storage, data: unknown) => {
+    const currentSubscribers = subscribersRef.current.get(tableName) || [];
+    currentSubscribers.forEach((subscriber) =>
+      subscriber.update(tableName, data),
+    );
   };
 
   return {
@@ -182,5 +215,7 @@ export const useStorage = (
     deleteValue,
     deleteAll,
     isDBConnecting,
+    subscribe,
+    unsubscribe,
   };
 };

@@ -8,9 +8,8 @@ import { useEffect, useState } from "react";
 const dbName = "storage";
 
 const EmployeeList = () => {
-  const { getAllValue, putValue, isDBConnecting } = useStorage(dbName, [
-    "employees",
-  ]);
+  const { getAllValue, putValue, isDBConnecting, subscribe, unsubscribe } =
+    useStorage(dbName, ["employees"]);
 
   const [employees, setEmployees] = useState<Employee[]>([]);
 
@@ -23,6 +22,22 @@ const EmployeeList = () => {
     };
     fetchData();
   }, [isDBConnecting]);
+
+  useEffect(() => {
+    const subscriber = {
+      update: (tableName: "employees", data: Employee) => {
+        if (tableName === "employees") {
+          setEmployees((prevEmployees) => [...prevEmployees, data]);
+        }
+      },
+    };
+
+    subscribe(subscriber, "employees");
+
+    return () => {
+      unsubscribe(subscriber, "employees");
+    };
+  }, [subscribe, unsubscribe]);
 
   const pushToDbItem = (item: Omit<Employee, "uid">) => {
     putValue("employees", item);
@@ -37,7 +52,7 @@ const EmployeeList = () => {
         <h2>Employees</h2>
         <ul className={s.employeeList}>
           {employees.map((employee) => (
-            <li key={employee.uid} className={s.employeeItem}>
+            <li key={employee.id} className={s.employeeItem}>
               {employee.name} - {employee.role} - Manager: {employee.manager}
             </li>
           ))}

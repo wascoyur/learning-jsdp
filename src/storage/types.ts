@@ -1,5 +1,5 @@
 export type Employee = {
-  uid: string;
+  id: string;
   name: string;
   role: string;
   manager: string;
@@ -17,3 +17,7 @@ export type Storage = {
   employees: Employee[];
   topics: Topic[];
 };
+
+export interface Subscriber {
+  update: (tableName: keyof Storage, data: unknown) => void;
+}
