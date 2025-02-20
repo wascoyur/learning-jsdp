@@ -5,14 +5,14 @@ const Database = {
 };
 
 interface UseStorageResult {
-  getValue: (tableName: string, id: number) => Promise<any>;
-  getAllValue: (tableName: string) => Promise<any[]>;
+  getValue: (tableName: string, id: number) => Promise<unknown>;
+  getAllValue: (tableName: string) => Promise<unknown[]>;
   putValue: (tableName: string, value: object) => Promise<IDBValidKey | null>;
-  putBulkValue: (tableName: string, values: object[]) => Promise<any[]>;
+  putBulkValue: (tableName: string, values: object[]) => Promise<unknown[]>;
   updateValue: (params: {
     tableName: string;
     id: number;
-    newItem: any;
+    newItem: unknown;
   }) => void;
   deleteValue: (tableName: string, id: number) => number | null;
   deleteAll: (tableName: string) => void;
@@ -25,9 +25,11 @@ export const useStorage = (
 ): UseStorageResult => {
   const [db, setDB] = useState<IDBDatabase | null>(null);
   const [isDBConnecting, setIsDBConnecting] = useState<boolean>(true);
+
   useEffect(() => {
     const initDB = () => {
       const request = indexedDB.open(databaseName, Database.version);
+
       request.onupgradeneeded = () => {
         const database = request.result;
         tableNames.forEach((tableName) => {
@@ -62,7 +64,7 @@ export const useStorage = (
   };
 
   const getValue = useCallback(
-    (tableName: string, id: number): Promise<any> => {
+    (tableName: string, id: number): Promise<unknown> => {
       return new Promise((resolve, reject) => {
         try {
           const store = getTransaction(tableName, "readonly");
@@ -77,7 +79,7 @@ export const useStorage = (
     [db],
   );
 
-  const getAllValue = (tableName: string): Promise<any[]> => {
+  const getAllValue = (tableName: string): Promise<unknown[]> => {
     return new Promise((resolve, reject) => {
       try {
         const store = getTransaction(tableName, "readonly");
@@ -109,7 +111,7 @@ export const useStorage = (
   const putBulkValue = async (
     tableName: string,
     values: object[],
-  ): Promise<any[]> => {
+  ): Promise<unknown[]> => {
     try {
       const store = getTransaction(tableName, "readwrite");
       values.forEach((value) => store.put(value));
@@ -126,7 +128,7 @@ export const useStorage = (
   }: {
     tableName: string;
     id: number;
-    newItem: any;
+    newItem: unknown;
   }) => {
     try {
       const store = getTransaction(tableName, "readwrite");
