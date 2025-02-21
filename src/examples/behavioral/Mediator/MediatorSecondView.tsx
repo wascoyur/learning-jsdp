@@ -1,16 +1,25 @@
 import { useEffect, useState } from "react";
-import { Storage } from "../../../storage/Storage.ts";
+import { useStorage } from "../../../storage/Storage.ts";
 import s from "./MediatorEmployee.module.scss";
+import { Employee } from "../../../storage/types.ts";
 
-const MediatorSecondView = (store: Pick<Storage, "employees">) => {
+const dbName = "storage";
+
+const MediatorSecondView = () => {
+  const { getAllValue, subscribe, unsubscribe } = useStorage<Employee>(dbName, [
+    "employees",
+  ]);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [currentEmployees, setCurrentEmployees] = useState(store.employees);
+  const [currentEmployees, setCurrentEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     if (isSubscribed) {
-      setCurrentEmployees(store.employees);
+      const fetchData = async () => {
+        await getAllValue("employees").then((r) => setCurrentEmployees(r));
+      };
+      fetchData();
     }
-  }, [store, isSubscribed]);
+  }, [subscribe, unsubscribe, isSubscribed]);
 
   const toggleSubscription = () => {
     setIsSubscribed((prev) => !prev);
@@ -24,7 +33,7 @@ const MediatorSecondView = (store: Pick<Storage, "employees">) => {
       </button>
       <ul className={s.employeeList}>
         {currentEmployees.map((employee) => (
-          <li key={employee.uid} className={s.employeeItem}>
+          <li key={employee.name} className={s.employeeItem}>
             {employee.name} - {employee.role} - Manager: {employee.manager}
           </li>
         ))}

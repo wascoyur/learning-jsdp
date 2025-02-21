@@ -4,6 +4,7 @@ import { Card } from "../../../components/Card/Card.tsx";
 import Mediator from "./EmployeeMediator";
 import { Employee, Subscriber } from "../../../storage/types.ts";
 import { useEffect, useState } from "react";
+import MediatorSecondView from "./MediatorSecondView.tsx";
 
 const dbName = "storage";
 
@@ -52,14 +53,14 @@ const EmployeeList = () => {
         <h2>Employees</h2>
         <ul className={s.employeeList}>
           {employees.map((employee) => (
-            <li key={employee.id} className={s.employeeItem}>
+            <li key={employee.name} className={s.employeeItem}>
               {employee.name} - {employee.role} - Manager: {employee.manager}
             </li>
           ))}
         </ul>
       </div>
 
-      {/*<MediatorSecondView employees={employees} />*/}
+      <MediatorSecondView />
     </Card>
   );
 };
