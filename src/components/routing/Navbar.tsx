@@ -34,6 +34,7 @@ const Navbar = () => {
             { to: "/behavioral/mediator", label: "Mediator" },
           ]}
         />
+        <NavItem to="/llms" label="LLMs" submenu={[]} />
       </ul>
     </nav>
   );
